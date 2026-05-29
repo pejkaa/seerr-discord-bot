@@ -78,6 +78,12 @@ async function handleConfirmRequest(interaction) {
   const cached = interaction.client._detailsCache?.get(interaction.user.id);
   const lib = cached?.libraryName ? getLibraryByName(cached.libraryName) : getLibraries().find(l => l.mediaType === mediaType) || getLibraries()[0];
   const linked = store.getLinkedUser(interaction.user.id);
+	if (!linked) {
+  return interaction.editReply({
+    embeds: [embeds.errorEmbed('You must link your account before making requests.\nUse **/link your-seerr-email@example.com** to get started.')],
+    components: []
+  });
+}
   let details;
   try {
     details = mediaType === 'movie' ? await seer.getMovie(tmdbId) : await seer.getTv(tmdbId);
